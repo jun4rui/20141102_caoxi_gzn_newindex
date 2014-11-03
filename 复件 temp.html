@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8"> 
+	<title>Diatom Mub Insititue</title>
+	<script src="${base}/common/gzn/jquery-1.11.1.min.js"></script>
+	<script src="${base}/common/gzn/jquery.jkit.1.2.16.min.js"></script>
+	<link rel="stylesheet" href="${base}/common/gzn/common.css"/>
+
+	<style>
+		body {
+			background-color: #ACC4DE;
+			padding: 0;
+			margin: 0;
+		}
+
+		a {
+			text-decoration: none;
+		}
+
+		img {
+			border: 0px;
+		}
+
+		ul,li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.clear {
+			clear: both;
+		}
+
+		.main-width {
+			width: 990px;
+			margin: 0 auto;
+		}
+
+		#header-section {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		#header-section .header-menu {
+			height: 20px;
+			display: block;
+			line-height: 20px;
+		}
+
+		#header-section .header-menu .header-menu-left {
+			float: left;
+		}
+
+		#header-section .header-menu .header-menu-left ul li {
+			float: left;
+			margin-right: 1em;
+			padding-right: 1em;
+			color: #3E3E3E;
+			border-right: 1px solid #3E3E3E;
+		}
+
+		#header-section .header-menu .header-menu-right {
+			float: right;
+		}
+
+		#header-section .header-menu .header-menu-right ul li {
+			float: left;
+			margin-right: 1em;
+			padding-right: 1em;
+			color: #3E3E3E;
+		}
+
+		#gallery-section {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		#main-section {
+			width: 100%;
+			margin: 0 auto;
+			margin-bottom: 10px;
+		}
+
+		#footer-section {
+			width: 100%;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+<body>
+<#include "/front/header.html" />
+
+
+<style>
+	#gallery-section {
+		width:100%;
+		height:400px;
+		background-position: center center;
+		background-size: cover;
+		position: relative;
+	}
+	#gallery-section .point-section {
+		position: absolute;
+		margin:0 auto;
+		text-align: center;
+		bottom: 0;
+		left: 0;
+		font-size:30px;
+		width:100%;
+	}
+	#gallery-section .left-turn {
+		position:absolute;
+		left:0px;
+		top:140px;
+		cursor:pointer;
+	}
+	#gallery-section .right-turn {
+		position:absolute;
+		right:0px;
+		top:140px;
+		cursor:pointer;
+	}
+
+	#gallery-section .point-section li {
+		display:inline;
+		color:#C9C9C9;
+		cursor: pointer;
+	}
+	#gallery-section .point-section li.current {
+		color:#FFF;
+	}
+</style>
+<div id="gallery-section">
+	<div class="point-section">
+		<ul>
+		</ul>
+	</div>
+	<div class="left-turn">
+		<img src="${base}/common/gzn/images/arrow_left.png" alt="" onclick="turnGallery(-1)"/>
+	</div>
+	<div class="right-turn">
+		<img src="${base}/common/gzn/images/arrow_right.png" alt="" onclick="turnGallery(1)"/>
+	</div>
+</div>
+<script>
+	var galleryList =   [
+		<@s.action name='websinfo_queryWebsInfos' infoClass='507' namespace='/common' executeResult='false' />
+		<#list webInfoList as unit>
+			{name:'${unit.info_name}', image:'/${unit.info_thumbpic}', desc:'' },
+		</#list>
+		{ name:'', image:'', desc:'' }
+	];
+	galleryList.pop();
+
+	$("#gallery-section").ready(function(){
+		for (var i in galleryList){
+			$('#gallery-section>.point-section>ul').append('<li>&bull;</li>');
+		}
+		showGallery(0);
+		$('#gallery-section .point-section ul li').bind('click',function(){
+			showGallery($(this).index());
+		});
+		setInterval('turnGallery(1)',3000);
+	});
+	function turnGallery(inNum){
+		var pageMax = galleryList.length;
+		var pageCur = $('#gallery-section .point-section ul li.current').index();
+		var page    = pageCur+inNum;
+		if (page<0)
+			page= pageMax-1;
+		if ((page+1)>pageMax)
+			page= 0;
+		showGallery(page);
+	}
+
+	function showGallery(inID){
+		//console.log('inID:'+inID);
+		$("#gallery-section").animate({opacity:0.3},250).
+				css({"background-image":'url('+galleryList[inID].image+')'}).
+				animate({opacity:1},350);
+		$('#gallery-section>.point-section>ul>li.current').removeClass('current');
+		$('#gallery-section>.point-section>ul>li:eq('+inID+')').addClass('current');
+	}
+</script>
+<style>
+	#main-section {
+		width: 990px;
+		margin-top:15px;
+	}
+	.widget_b.standard-height {
+		height:230px;
+		overflow:hidden;
+	}
+	.widget_a.standard-height {
+		height:243px;
+		overflow:hidden;
+	}
+	#left-section {
+		width: 230px;
+		float:left;
+	}
+	#center-section {
+		float:left;
+		margin-left:10px;
+		width:510px;
+
+	}
+	#right-section {
+		width: 230px;
+		float:right;
+	}
+	.widget_a {
+		width:100%;
+		border:1px solid #9f9f9f;
+		margin-bottom: 10px;
+	}
+	.widget_a .title {
+		background:#1b3d73;
+		color:#FFF;
+		line-height:37px;
+		text-indent:.5em;
+		font-size:24px;
+	}
+	.widget_a .content {
+		background-color: #FFF;
+		padding:10px;
+	}
+	.widget_a .content .corp-list {
+		border-bottom:1px dotted #CCC;
+		padding: .5em 0;
+		font-size:12px;
+		line-height: 180%;
+	}
+	.widget_a .content .corp-list:last-child {
+		border: 0;
+	}
+	.widget_a .content .corp-list img {
+		width: 50px;
+		height:50px;
+		float:left;
+		margin-right:.5em;
+	}
+	.widget_a .content .morelink {
+		text-align: right;
+	}
+	.widget_a .content .morelink a {
+		background-color: #d0e4f2;
+		padding:.2em .6em;
+		color:#000;
+		font-size:14px;
+		font-family:"Century Gothic", Helvetica;
+		font-weight: bold;
+	}
+	.widget_b {
+		border:1px solid #9f9f9f;
+		background-color: #FFF;
+		padding:.5em;
+		margin-bottom:10px;
+	}
+	.widget_b .title {
+		border-left: 5px solid #1c468e;
+		text-indent: .5em;
+		line-height: 20px;
+		font-size: 16px;
+		position: relative;
+	}
+	.widget_b .title .morelink {
+		position:absolute;
+		right:0;
+		background-color: #d0e4f2;
+		padding:.2em .6em;
+		color:#000;
+		line-height: 100%;
+		font-size:14px;
+		font-family:"Century Gothic", Helvetica;
+		font-weight: bold;
+		text-align:center;
+		text-indent:0;
+	}
+	.widget_b .content {
+		padding:.5em;
+		line-height:180%;
+	}
+</style>
+<div id="main-section">
+	<div id="left-section">
+		<@s.action name='websinfo_queryWebsInfos' infoClass='508' namespace='/common' executeResult='false' />
+		<div class="widget_b standard-height" style="padding:0;height: 243px;">
+			<a href="${webInfoList[0].url}">
+				<img src="/${webInfoList[0].info_thumbpic}" style="width:228px; height:243px;"/>
+			</a>
+		</div>
+		<div class="widget_b standard-height" style="padding:0;height: 243px;">
+			<a href="${webInfoList[1].url}">
+				<img src="/${webInfoList[1].info_thumbpic}" style="width:228px; height:243px;"/>
+			</a>
+		</div>
+	</div>
+	<div id="center-section">
+		<div class="widget_b standard-height">
+			<div class="title">
+				News
+				<a class="morelink" href="">MORE</a>
+			</div>
+			<div class="content">
+				<@s.action name='websinfo_queryWebsInfos' infoClass='482' namespace='/common' executeResult='false' />
+				<#list webInfoList as newsList>
+					<li><a href="${base}/news/${newsList.info_id}.htm">${newsList.info_name}</a></li>
+				</#list>
+			</div>
+		</div>
+		<@s.action name='websinfo_queryWebsInfos' infoClass='512' namespace='/common' executeResult='false' />
+		<div class="widget_b standard-height" style="background:url(/${webInfoList[0].info_thumbpic}); background-position: center center; background-size: cover;">
+
+		</div>
+	</div>
+	<div id="right-section">
+		<@s.action name='websinfo_queryWebsInfos' infoClass='509' namespace='/common' executeResult='false' />
+		<div class="widget_a standard-height">
+			<a href="${webInfoList[0].url}">
+				<img src="/${webInfoList[0].info_thumbpic}"" style="width:230px; height:243px;"/>
+			</a>
+			<!-- 
+			<div class="content">
+				<ul>
+					<li class="corp-list">
+						<img src="${base}/common/gzn/images/temp.jpg" alt=""/>
+						balabalabala
+						<div class="clear"></div>
+					</li>
+					<li class="corp-list">
+						<img src="${base}/common/gzn/images/temp.jpg" alt=""/>
+						balabalabala
+						<div class="clear"></div>
+					</li>
+					<li class="corp-list">
+						<img src="${base}/common/gzn/images/temp.jpg" alt=""/>
+						balabalabala
+						<div class="clear"></div>
+					</li>
+					<li class="corp-list">
+						<img src="${base}/common/gzn/images/temp.jpg" alt=""/>
+						balabalabala
+						<div class="clear"></div>
+					</li>
+				</ul>
+				<div class="morelink">
+					<a href="">MORE</a>
+				</div>
+			</div>
+			-->
+		</div>
+
+		<div class="widget_a standard-height">
+			<div class="title">DMI member</div>
+			<div class="content" style="padding:0 !important;">
+				<div data-jkit="[slideshow:interval=5000;speed=250;animation=fade]">
+				<@s.action name='websinfo_queryWebsInfos' infoClass='484' namespace='/common' executeResult='false' />
+				<#list webInfoList as member>
+					<#if member_index gt 2>
+						<#break>
+					</#if>
+						<img src="/${member.info_thumbpic}" alt="${member.info_name}" style="width:230px; height:208px;"/>
+				</#list>
+				</div>
+				<!-- 			
+				<ul>
+					<@s.action name='websinfo_queryWebsInfos' infoClass='484' namespace='/common' executeResult='false' />
+					<#list webInfoList as member>
+						<#if member_index gt 2>
+							<#break>
+						</#if>
+						<li class="corp-list">
+							<img src="/${member.info_thumbpic}" alt=""/>
+							${member.info_name}
+							<div class="clear"></div>
+						</li>
+					</#list>
+				</ul>
+				 -->
+				<!-- 
+				<div class="morelink">
+					<a href="">MORE</a>
+				</div>
+				-->
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+
+	<hr style="background: #183c6e; height: 1em; border: 0;"/>
+
+	<style>
+		#product-show-panel {
+			background: url(${base}/common/gzn/images/panel_bg.jpg);
+			overflow:hidden;
+		}
+		#product-show-panel .title .tab-section {
+			position:absolute;
+			right:1em;
+			top:5px;
+		}
+		#product-show-panel .title .tab-section li {
+			font-size:12px;
+			line-height: 12px;
+			border-right:1px solid #333;
+			padding-right:1em;
+			float:left;
+			cursor:pointer;
+		}
+		#product-show-panel .title .tab-section li:hover,
+		#product-show-panel .title .tab-section li.current {
+			color:#1c468e;
+		}
+		#product-show-panel .content {
+			width:3000px;
+			height:230px;
+			overflow:hidden;
+			/*padding: 1.5em .5em;*/
+			padding-top:1em;
+		}
+
+		.product-unit {
+			width: 220px;
+			height: 220px;
+			border:2px solid #ccc;
+			float:left;
+			margin-right: 22px;
+			margin-bottom: 20px;
+			position:relative;
+		}
+		.product-unit:hover {
+			border:2px solid #1b3d73;
+		}
+		.product-unit img {
+			width:220px;
+			height:220px;
+			display: block;
+		}
+		.product-unit .desc {
+			display: block;
+			line-height:120%;
+			font-size:14px;
+			text-align:center;
+			background:rgba(136, 165, 202, 0.80);
+			color:#FFF;
+			position:absolute;
+			bottom:0px;
+			left:0px;
+			width:200px;
+			padding:10px;
+		}
+	</style>
+	<script>
+		var productList = [
+			<@s.action name='websinfo_queryHTClass' classParent='511' namespace='/common' executeResult='false'/>
+			<#list classList as typeUnit>
+				{
+					series:'${typeUnit.typename}',
+					product:[
+						<@s.action name='websinfo_queryWebsInfos' infoClass='${typeUnit.id}' namespace='/common' executeResult='false' />
+						<#list webInfoList as product>
+							<#if product.url?trim!=''>
+								{name:'${product.info_name}',image:'/${product.info_thumbpic}',link:'${base}${product.url}'},
+							<#else>
+								{name:'${product.info_name}',image:'/${product.info_thumbpic}',link:'${base}/news/${product.info_id}.htm'},
+							</#if>
+						</#list>
+					]
+				},
+			</#list>
+		];
+
+		function showSeries(inSeriesName){
+			//console.log(inSeriesName);
+			$('#product-show-panel .content').html('');
+			for (var i in productList){
+				if (productList[i].series==inSeriesName){
+					var tempHtml    = "";
+					for (var j in productList[i].product){
+						tempHtml    += '<a href="'+productList[i].product[j].link+'" target="_blank"><div class="product-unit"><img src="'+productList[i].product[j].image+'" alt=""/><div class="desc">'+productList[i].product[j].name+'</div></div></a>';
+					}
+					tempHtml    += '<div class="clear" style="clear:both;"></div>';
+					$('#product-show-panel .content').append(tempHtml);
+				}
+			}
+		}
+		$(document).ready(function(){
+			$('#product-show-panel .tab-section ul li:eq(0)').trigger('mouseover');
+		});
+	</script>
+	
+	<script>
+	function scrollJ(){
+		//console.log('Do scroll.');
+		$('#marquee a').eq(0).animate({'opacity':'0'},function(){
+			// ȥ����һ��
+			var tempSjURL	= $('#marquee a:eq(0)').attr('href');
+			var tempSjHTML	= '<a href="'+tempSjURL+'" target="_blank">'+$('#marquee a:eq(0)').html()+'</a><div class="clear" style="clear:both;"></div>';
+			$('#marquee a:eq(0) img').remove();
+			$('#marquee a:eq(0) .desc').remove();
+			$('#marquee a:eq(0) .product-unit').animate({'width':'0px'},function(){
+				$('#marquee a:eq(0)').remove();
+				$('#marquee .clear').remove();
+			});
+			// �ѵ�һ���ŵ����
+			console.log(tempSjHTML);
+			$('#marquee ').append(tempSjHTML);		
+		});
+	}
+	</script>
+	<div id="product-show-panel" class="widget_b">
+		<div class="title">
+			Recommendation <!-- <button onclick="scrollJ()">TEST</button> -->
+			<div class="tab-section">
+				<ul>
+					<script>
+						var tempHtml    = "";
+						for (var i in productList){
+							tempHtml    += '<li>'+productList[i].series+'</li>';
+						}
+						document.write(tempHtml);
+						$('#product-show-panel .tab-section ul li').bind('mouseover',function(){
+							$('#product-show-panel .tab-section ul li.current').removeClass('current');
+							$(this).addClass('current');
+							//showSeries($(this).text());
+						});
+					</script>
+				</ul>
+			</div>
+		</div>
+		<div class="content" id="marquee">
+			<div class="clear" style="clear:both;"></div>
+		</div>
+		<script>
+		$('#product-show-panel .content').ready(function(){
+			$('#product-show-panel .content').html('');
+			for (var i in productList){
+				var tempHtml    = "";
+				for (var j in productList[i].product){
+					tempHtml    += '<a href="'+productList[i].product[j].link+'" target="_blank"><div class="product-unit"><img src="'+productList[i].product[j].image+'" alt=""/><div class="desc">'+productList[i].product[j].name+'</div></div></a>';
+				}
+				tempHtml    += '<div class="clear" style="clear:both;"></div>';
+				$('#product-show-panel .content').append(tempHtml);
+			}
+		});
+		</script>
+	</div>
+</div>
+
+<#include "/front/footer.html" />
+<div style="display:none;">
+	<@s.action name='websinfo_queryWebsInfos' infoClass='507' namespace='/common' executeResult='false' />
+	<#list webInfoList as unit>
+		${unit.info_name} ${unit.info_thumbpic}
+	</#list>
+</div>
+<div id="left-float"></div>
+<div id="right-float"></div>
+<script>
+$(document).ready(function(){
+	$('body').jKit();
+	var interval	= window.setInterval(scrollJ,5000);
+});
+</script>
+</body>
+</html>
+
